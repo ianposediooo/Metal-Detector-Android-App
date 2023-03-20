@@ -1,0 +1,24 @@
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:enabled="true" android:visible="true">
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/settings"
+            android:title="Settings"
+            android:orderInCategory="1"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/share"
+            android:title="Share"
+            android:orderInCategory="2"
+            app:showAsAction="always"/>
+        <item
+            android:id="@+id/nav_about"
+            android:icon="@drawable/about"
+            android:title="About"
+            android:orderInCategory="3"
+            app:showAsAction="always"/>
+    </group>
+</menu>
