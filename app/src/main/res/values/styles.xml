@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="CustomProgressBar" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/customprogressbar</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:maxHeight">500dp</item>
+    </style>
+    <style name="CustomProgressBar1" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:indeterminateOnly">false</item>
+        <item name="android:progressDrawable">@drawable/customprogressbar1</item>
+        <item name="android:minHeight">10dp</item>
+        <item name="android:maxHeight">500dp</item>
+    </style>
+</resources>

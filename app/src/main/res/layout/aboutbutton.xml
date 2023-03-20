@@ -1,25 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:layout_marginTop="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
-    <Button
-        android:layout_marginEnd="10dp"
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Donate ☕" />
+    <RelativeLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Rate app ⭐" />
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
-    </LinearLayout>
-</RelativeLayout>
+        <TextView
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/divider5"
+            android:id="@+id/textView"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:fontFamily="@font/productsans"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="18sp"
+            android:text="Developed and Designed by: \nIan Posedio\n\nMade in PH 🇵🇭❤️"/>
+
+        <View
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/textView"
+            android:id="@+id/divider6"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+        <TextView
+            android:layout_marginTop="15dp"
+            android:layout_below="@id/divider6"
+            android:id="@+id/textView2"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            android:elegantTextHeight="true"
+            android:text="Disclaimer:\n\nThis metal detector app is designed for entertainment purposes only and should not be used for serious metal detection activities. The accuracy of the app's readings may vary depending on a number of factors, including the device used, electromagnetic interference, and the presence of other metals or objects in the surrounding environment. The app is not intended to replace professional metal detectors and should not be relied upon for any serious metal detection purposes.
+
+Furthermore, the user should always obtain proper permission before using the app to detect metal on private property or in any other sensitive locations. The app developer and/or distributor assume no liability for any damages or legal consequences arising from the use of this app. Use of the app constitutes agreement to these terms and conditions."/>
+
+        <View
+            android:id="@+id/divider4"
+            android:layout_marginTop="20dp"
+            android:layout_below="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+
+        <LinearLayout
+            android:id="@+id/buttonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/divider4"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="10dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/divider5"
+                android:layout_marginTop="10dp"
+                android:text="Support App Development ❤️"
+                android:textColor="?attr/colorPrimary"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:layout_marginBottom="10dp"/>
+
+            <Button
+                android:id="@+id/button"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Donate ☕💵"
+                android:textAlignment="center"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button2"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Rate app ⭐⭐⭐⭐⭐"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button3"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View on Github 🧑‍💻"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button4"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Feedback 💌📨"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/button5"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Report Bug 📧📨"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <View
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/buttonGroup"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
+
+    </RelativeLayout>
+</ScrollView>

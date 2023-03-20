@@ -5,42 +5,123 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="14dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@id/progressCardView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:gravity="center">
+        android:layout_alignWithParentIfMissing="false"
+        android:layout_below="@+id/cardView"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="25dp"
+        android:hapticFeedbackEnabled="false">
 
-    <ImageButton
-        android:id="@+id/darkMode"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#00000000"
-        android:contentDescription="TODO"
-        app:srcCompat="@drawable/darkmode" />
+        <TextView
+            app:layout_constraintStart_toStartOf="@id/progressCardView"
+            app:layout_constraintTop_toBottomOf="@id/progressCardView"
+            android:text="00μT"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <ImageButton
-        android:id="@+id/mute"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#00000000"
-        android:contentDescription="TODO"
-        app:srcCompat="@drawable/volume_off_button" />
+        <TextView
+            app:layout_constraintEnd_toEndOf="@id/progressCardView"
+            app:layout_constraintTop_toBottomOf="@id/progressCardView"
+            android:text="200μT"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <ImageButton
-        android:id="@+id/vibrate"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#00000000"
-        android:contentDescription="TODO"
-        app:srcCompat="@drawable/vibration_button" />
-    </LinearLayout>
+        <TextView
+            app:layout_constraintEnd_toEndOf="@id/progressCardView1"
+            app:layout_constraintTop_toBottomOf="@id/progressCardView"
+            android:text=">400μT"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            app:layout_constraintEnd_toEndOf="@id/progressCardView12"
+            app:layout_constraintTop_toBottomOf="@id/progressCardView"
+            android:text=">800μT"
+            android:textSize="10sp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/progressCardView"
+            android:layout_width="230dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/progressCardView1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/progressbar"
+                style="@style/CustomProgressBar"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:id="@+id/progressCardView1"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/progressCardView12"
+            app:layout_constraintStart_toEndOf="@+id/progressCardView"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/progressbar1"
+                style="@style/CustomProgressBar1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/progressCardView12"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="@dimen/cardview_default_elevation"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/progressCardView1"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ProgressBar
+                android:id="@+id/progressbar2"
+                style="@style/CustomProgressBar1"
+                android:layout_width="match_parent"
+                android:layout_height="30dp" />
+        </com.google.android.material.card.MaterialCardView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:text="Sensor Accuracy: UNKNOWN"
+        android:textColor="?attr/colorOnSurface"
+        android:textSize="18sp"
+        android:id="@+id/accuracyTextView"
+        android:layout_marginTop="30dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/progressCardView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
 
     <com.google.android.material.appbar.MaterialToolbar
-        android:elevation="10dp"
         app:title="@string/app_name"
         app:titleTextColor="?attr/colorOnPrimary"
         android:layout_alignParentStart="true"
@@ -53,21 +134,8 @@
         app:menu="@menu/drawer_menu" />
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/button3"
-        style="@style/Widget.Material3.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="70dp"
-        android:layout_below="@+id/cardView"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="20dp"
-        android:elevation="10dp"
-        android:text="Pause Detection"
-        android:textSize="18sp"
-        app:icon="@drawable/pause_button" />
-
     <com.google.android.material.card.MaterialCardView
-        style="@style/Widget.Material3.CardView.Elevated"
+        style="@style/Widget.Material3.CardView.Filled"
         android:id="@+id/cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -77,16 +145,6 @@
         app:cardCornerRadius="28dp"
         android:layout_marginStart="50dp"
         app:cardElevation="10dp">
-
-        <ProgressBar
-            android:layout_marginLeft="14dp"
-            android:layout_marginRight="14dp"
-            android:theme="@style/pbarcolor"
-            android:id="@+id/progressbar"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="4dp"/>
-
 
     <RelativeLayout
     android:layout_width="match_parent"
@@ -102,18 +160,18 @@
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:text="No metal detected" />
+            android:text="Start Detection" />
 
         <TextView
+            android:layout_below="@id/number"
             android:textStyle="italic"
             android:textColor="@color/white"
             android:gravity="center"
             android:layout_centerHorizontal="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="microTesla"
+            android:text="μT: microTesla"
             android:textSize="18sp"
-            android:layout_marginTop="200dp"
             android:layout_marginBottom="30dp"/>
 
     <LinearLayout
@@ -130,10 +188,9 @@
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="130sp"
-            tools:text="00" />
+            android:text="00" />
 
         <TextView
-            android:id="@+id/unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -151,11 +208,57 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="30dp"
         android:clickable="true"
         android:focusable="true"
         app:srcCompat="@drawable/flashlight_off"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/accuracyTextView"
+        android:layout_marginTop="30dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:text="Start Detection"
+            android:textSize="18sp"
+            app:icon="@drawable/pause_button"
+            app:iconSize="40dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:layout_marginStart="5dp"
+            android:id="@+id/vibrationButton"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/vibrateoff"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/button3"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+        <Button
+            android:id="@+id/beepButton"
+            style="?attr/materialIconButtonFilledTonalStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:icon="@drawable/mute_button"
+            android:layout_marginEnd="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/button3"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="SpeakableTextPresentCheck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

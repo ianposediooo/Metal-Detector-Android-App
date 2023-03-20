@@ -1,5 +1,6 @@
 package com.ianposedio.metaldetector
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,19 +11,21 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.hardware.camera2.CameraAccessException
 import android.hardware.camera2.CameraManager
+import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
 import android.os.Vibrator
 import android.provider.Settings
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.WindowManager
-import android.widget.*
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -30,6 +33,8 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 
 class MainActivity : AppCompatActivity(), SensorEventListener {
@@ -38,74 +43,109 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private var hasFlash = false
     private var isLighOn = false
-    private var isSensorOn = false
-
+    private var isVibrating = false
+    private var isBeeping = false
+    private var isMagnetometerEnabled: Boolean = false
 
     private lateinit var sensorManager: SensorManager
     private var magnetometer: Sensor? = null
     private lateinit var textView: TextView
     private lateinit var progressBar: ProgressBar
+    private lateinit var progressBar1: ProgressBar
+    private lateinit var progressBar2: ProgressBar
     private lateinit var magneticFieldStrengthTextView: TextView
     private lateinit var vibrator: Vibrator
     private lateinit var fab: FloatingActionButton
-    private var vibServiceIntent: Intent? = null
-    private lateinit var darkmode: ImageButton
     private lateinit var cardView: MaterialCardView
     private lateinit var button: MaterialButton
+    private lateinit var accuracyTextView: TextView
+    private lateinit var vibrateButton: MaterialButton
+    private lateinit var beepButton: MaterialButton
+    private lateinit var mediaPlayer: MediaPlayer
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        this.darkmode = this.findViewById(R.id.darkMode);
-        if (getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_NO) {
-            this.darkmode.setImageResource(R.drawable.darkmode)
-        }
-        if (getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            this.darkmode.setImageResource(R.drawable.lightmode)
-        }
-
-
-        this.darkmode.setOnClickListener {
-            if (darkmode.isPressed() && getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-                    /*this.darkmode.setImageResource(R.drawable.lightmode)*/
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    Toast.makeText(this, "Light mode turned ON", Toast.LENGTH_SHORT).show()
-                    return@setOnClickListener
-                }
-                /*this.darkmode.setImageResource(R.drawable.darkmode)*/
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                Toast.makeText(this, "Dark mode turned ON", Toast.LENGTH_SHORT).show()
-        }
-
-
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-
         fab = findViewById(R.id.floatingActionButton)
         textView = findViewById(R.id.textView)
         progressBar = findViewById(R.id.progressbar)
+        progressBar1 = findViewById(R.id.progressbar1)
+        progressBar2 = findViewById(R.id.progressbar2)
         button = findViewById(R.id.button3)
         magneticFieldStrengthTextView = findViewById(R.id.magneticFieldStrengthTextView)
         sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
         magnetometer = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD)
         vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+        accuracyTextView = findViewById(R.id.accuracyTextView)
+        vibrateButton = findViewById(R.id.vibrationButton)
+        beepButton = findViewById(R.id.beepButton)
+        mediaPlayer = MediaPlayer.create(this, R.raw.beepfast)
 
 
-        this.button.setOnClickListener(View.OnClickListener {
-            if (this.button.isPressed && magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) } == true){
-                button.setText("Pause Detection")
-                button.setIconResource(R.drawable.pause_button)
-                /*Toast.makeText(this,"Sensor is ON",Toast.LENGTH_SHORT).show()*/
-                magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
-                return@OnClickListener
-            }else{
-                button.setText("Start Detection")
-                button.setIconResource(R.drawable.play_icon)
-                /*Toast.makeText(this,"Sensor Paused",Toast.LENGTH_SHORT).show()*/
-                sensorManager.unregisterListener(this)
+        //if has sensor or none
+        if (sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
+            //nothing
+        } else {
+            val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
+            builder.setTitle("No Magnet Sensor!")
+                .setMessage("Sorry but it looks like your device doesn't have a Magnetometer sensor. You cannot use this app.")
+                .setIcon(R.drawable.warning)
+                .setCancelable(false)
+                .setNegativeButton("Exit"){ dialog, id ->
+                    finish()
+                }
+            builder.show()
+        }
+
+
+
+
+        //vibration and beep buttons
+            beepButton.setOnClickListener {
+                isBeeping = !isBeeping
+                if (isBeeping) {
+                    beepButton.setIconResource(R.drawable.soundon_icon)
+                    startBeeping()
+                } else {
+                    beepButton.setIconResource(R.drawable.mute_button)
+                    stopBeeping()
+                }
             }
-        })
+
+            vibrateButton.setOnClickListener {
+                isVibrating = !isVibrating
+                if (isVibrating) {
+                    vibrateButton.setIconResource(R.drawable.vibration_button)
+                    startVibrating()
+                } else {
+                    vibrateButton.setIconResource(R.drawable.vibrateoff)
+                    stopVibrating()
+                }
+            }
+
+
+
+        //material toolbar
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+
+        //detection button
+        button.setOnClickListener {
+            if (isMagnetometerEnabled) {
+                stopBeeping()
+                sensorManager.unregisterListener(this)
+                isMagnetometerEnabled = false
+                button.text = "Start Detection"
+                button.setIconResource(R.drawable.play_icon)
+            } else {
+                magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
+                isMagnetometerEnabled = true
+                button.text = "Stop Detection"
+                button.setIconResource(R.drawable.stop_icon)
+            }
+        }
 
 
         //floatingactionbutton
@@ -119,11 +159,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 this.turnOnFlash()
             })
 
+        //if device has flash?
         val hasSystemFeature: Boolean = this.packageManager.hasSystemFeature("android.hardware.camera.flash")
         hasFlash = hasSystemFeature
         if (!hasSystemFeature) {
             val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
             builder.setTitle("Error!")
+            builder.setCancelable(true)
             builder.setMessage("Sorry your device doesn't have a flashlight")
             builder.setNegativeButton(
                 "OK"
@@ -141,16 +183,70 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onResume() {
         super.onResume()
-        magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
+        if (isMagnetometerEnabled) {
+            sensorManager.unregisterListener(this)
+            isMagnetometerEnabled = false
+            button.text = "Start Detection"
+            button.setIconResource(R.drawable.play_icon)
+        } else {
+            magnetometer?.let { sensorManager.registerListener(this, it, SensorManager.SENSOR_DELAY_GAME) }
+            isMagnetometerEnabled = true
+            button.text = "Stop Detection"
+            button.setIconResource(R.drawable.stop_icon)
+        }
     }
+
 
     override fun onPause() {
         super.onPause()
-        vibrator.cancel()
+        stopBeeping()
+        turnOffFlash()
+        stopVibrating()
         sensorManager.unregisterListener(this)
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        val accuracyText = when (accuracy) {
+            SensorManager.SENSOR_STATUS_ACCURACY_LOW -> "LOW"
+            SensorManager.SENSOR_STATUS_ACCURACY_MEDIUM -> "MEDIUM"
+            SensorManager.SENSOR_STATUS_ACCURACY_HIGH -> "HIGH"
+            else -> "UNRELIABLE"
+        }
+        if (sensor!!.type == Sensor.TYPE_MAGNETIC_FIELD){
+            accuracyTextView.text = "Sensor Accuracy: $accuracyText"
+        }
+            if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_UNRELIABLE) {
+                val calibrationview = View.inflate(this, R.layout.calibrationview, null)
+                val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
+                builder.setTitle("Calibrate Sensor")
+                    .setIcon(R.drawable.warning)
+                    .setMessage("The magnetometer sensor accuracy is $accuracyText. Please calibrate the sensor like in the image shown below (4 times).")
+                    .setView(calibrationview)
+                    .setCancelable(false)
+                    .setPositiveButton("OK") { dialog, id ->
+                        if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
+                            dialog.dismiss()
+                        }
+                    }
+                builder.show()
+            }
+
+
+            if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_LOW) {
+                val calibrationview = View.inflate(this, R.layout.calibrationview, null)
+                val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
+                builder.setTitle("Calibrate Sensor")
+                    .setIcon(R.drawable.warning)
+                    .setMessage("The magnetometer sensor accuracy is $accuracyText. Please calibrate the sensor like in the image shown below (4 times).")
+                    .setView(calibrationview)
+                    .setCancelable(false)
+                    .setPositiveButton("OK") { dialog, id ->
+                        if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
+                            dialog.dismiss()
+                        }
+                    }
+                builder.show()
+            }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -158,98 +254,44 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         return true
     }
 
+    //menu items
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
 
-            R.id.nav_settings -> {
+            //settings menu
+            /*R.id.nav_settings -> {
                 // Handle menu item 1 click
                 val window = window
                 val checkBoxView = View.inflate(this, R.layout.checkbox, null)
 
-                val checkBox = checkBoxView.findViewById<CheckBox>(R.id.checkbox)
-                val checkBox1 = checkBoxView.findViewById<CheckBox>(R.id.checkbox1)
                 val checkBox2 = checkBoxView.findViewById<CheckBox>(R.id.checkbox2)
 
-                val sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-                val editor = sharedPreferences.edit()
-
-                checkBox.isChecked = sharedPreferences.getBoolean("isChecked1", false)
-                checkBox1.isChecked = sharedPreferences.getBoolean("isChecked2", false)
-                checkBox2.isChecked = sharedPreferences.getBoolean("isChecked3", false)
-
-                //vibration
-                vibServiceIntent = Intent(this, vib_service::class.java)
-                checkBox.text = "Vibration"
-                checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        Toast.makeText(this, "Vibration on", Toast.LENGTH_SHORT).show()
-                        /*startService(vibServiceIntent)*/
-                        // Save the state of the checkbox to SharedPreferences
-                        editor.putBoolean("isChecked1", isChecked)
-                        editor.apply()
-                    } else {
-                        Toast.makeText(this, "Vibration off", Toast.LENGTH_SHORT).show()
-                        /*stopService(vibServiceIntent)*/
-                        // Save the state of the checkbox to SharedPreferences
-                        getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-                        editor.putBoolean("isChecked1", false)
-                        editor.apply()
-                    }
-                }
-
-                //sound
-                checkBox1.text = "Sound"
-                checkBox1.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        Toast.makeText(this, "Sound on", Toast.LENGTH_SHORT).show()
-
-                        // Save the state of the checkbox to SharedPreferences
-                        editor.putBoolean("isChecked2", isChecked)
-                        editor.apply()
-                    } else {
-                        Toast.makeText(this, "Sound off", Toast.LENGTH_SHORT).show()
-
-                        // Save the state of the checkbox to SharedPreferences
-                        getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-                        editor.putBoolean("isChecked2", false)
-                        editor.apply()
-                    }
-                }
-
-                //keep screen on
+                //keep screen on checkbox
                 checkBox2.text = "Keep Screen On"
                 checkBox2.setOnCheckedChangeListener { buttonView, isChecked ->
                     if (isChecked) {
                         Toast.makeText(this, "Keeping screen on", Toast.LENGTH_SHORT).show()
-                        // Set the FLAG_KEEP_SCREEN_ON flag to keep the screen on
                         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                        // Save the state of the checkbox to SharedPreferences
-                        editor.putBoolean("isChecked3", isChecked)
-                        editor.apply()
                     } else {
-                        // Clear the FLAG_KEEP_SCREEN_ON flag to allow the screen to turn off
                         window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-                        // Save the state of the checkbox to SharedPreferences
                         getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-                        editor.putBoolean("isChecked3", false)
-                        editor.apply()
                     }
                 }
 
-                //dialog
+                //settings dialog
                 val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
                 builder.setTitle("Settings")
                     .setIcon(R.drawable.settings_icon)
                     .setView(checkBoxView)
                     .setCancelable(false)
-                    .setPositiveButton("OK") { dialog, id ->
+                    .setNegativeButton("OK") { dialog, id ->
                         dialog.cancel()
                     }
                 builder.show()
                 return true
-            }
+            }*/
 
+            //share menu item
             R.id.nav_share -> {
                 var myVersionName: String? = "Not Available" // initialize String
                 try {
@@ -257,7 +299,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 } catch (e: PackageManager.NameNotFoundException) {
                     e.printStackTrace()
                 }
-
+                //share intent
                 val intent = Intent(Intent.ACTION_SEND)
                 intent.type = "text/plain"
                 val Sub = "Get the Latest Version of Metal Detector"+ " v." + myVersionName +" on GitHub\n\nhttps://github.com/ianposediooo/"
@@ -266,20 +308,63 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 return true
             }
 
-
+            //about menu item
             R.id.nav_about -> {
                 val aboutButton = View.inflate(this, R.layout.aboutbutton, null)
                 val button = aboutButton.findViewById<MaterialButton>(R.id.button)
                 val button2 = aboutButton.findViewById<MaterialButton>(R.id.button2)
+                val button3 = aboutButton.findViewById<MaterialButton>(R.id.button3)
+                val button4 = aboutButton.findViewById<MaterialButton>(R.id.button4)
+                val button5 = aboutButton.findViewById<MaterialButton>(R.id.button5)
 
+                //about buttons
                 button.setOnClickListener {
-                    Toast.makeText(this, "Donation Coming soon!", Toast.LENGTH_SHORT).show()
+                    val url = "https://paypal.me/ianposedio"
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(url)
+                    startActivity(intent)
                 }
-
                 button2.setOnClickListener {
-                    Toast.makeText(this, "Rate App Coming soon!", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Rating App coming soon!", Toast.LENGTH_SHORT).show()
+                }
+                button3.setOnClickListener {
+                    val url = "https://github.com/ianposediooo/Metal-Detector-Android-App.git"
+                    val intent = Intent(Intent.ACTION_VIEW)
+                    intent.data = Uri.parse(url)
+                    startActivity(intent)
+                }
+                button4.setOnClickListener {
+                    val mailto = "mailto:posedioian@gmail.com" +
+                            "?cc=" +
+                            "&subject=" + Uri.encode("Metal Detector App Feedback") +
+                            "&body=" + Uri.encode("")
+                    val emailIntent = Intent(Intent.ACTION_SENDTO)
+                    emailIntent.data = Uri.parse(mailto)
+
+                    try {
+                        startActivity(emailIntent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(this, "Error to open email app", Toast.LENGTH_SHORT)
+                            .show()
+                    }
+                }
+                button5.setOnClickListener {
+                    val mailto = "mailto:posedioian@gmail.com" +
+                            "?cc=" +
+                            "&subject=" + Uri.encode("Metal Detector Bug Report") +
+                            "&body=" + Uri.encode("")
+                    val emailIntent = Intent(Intent.ACTION_SENDTO)
+                    emailIntent.data = Uri.parse(mailto)
+
+                    try {
+                        startActivity(emailIntent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(this, "Error to open email app", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
 
+                //version name
                 var myVersionName: String? = "Not Available" // initialize String
                 try {
                     myVersionName = packageManager.getPackageInfo(packageName, 0).versionName
@@ -287,19 +372,14 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     e.printStackTrace()
                 }
 
+                //about dialog builder
                 val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
-                builder.setMessage("Developed and Designed by:\nIan Baldwin Aquino Posedio" + "\n\nMade in PH \uD83C\uDDF5\uD83C\uDDED❤️")
-                builder.setTitle("About:\n\n" + this.getString(R.string.app_name) + " v." + myVersionName)
+                /*builder.setMessage("Developed and Designed by:\nIan Baldwin Aquino Posedio" + "\n\nMade in PH \uD83C\uDDF5\uD83C\uDDED❤️")*/
+                builder.setTitle(this.getString(R.string.app_name) + " v." + myVersionName)
                     .setIcon(R.drawable.about_icon)
                     .setView(aboutButton)
-                    .setCancelable(false)
-                    .setPositiveButton("View App on GitHub \uD83E\uDDD1\u200D\uD83D\uDCBB") { dialog, id ->
-                        val url = "https://github.com/ianposediooo/"
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(url)
-                        startActivity(intent)
-                    }
-                    .setNegativeButton("Close ❌"){ dialog, id ->
+                    .setCancelable(true)
+                    .setNegativeButton("Close"){ dialog, id ->
                         dialog.cancel()
                     }
                 builder.show()
@@ -310,44 +390,77 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-
+    //magnetometer sensor
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor?.type == Sensor.TYPE_MAGNETIC_FIELD) {
-            val magneticFieldStrength = Math.sqrt(Math.pow(event.values[0].toDouble(), 2.0) +
-                    Math.pow(event.values[1].toDouble(), 2.0) +
-                    Math.pow(event.values[2].toDouble(), 2.0))
+            val magneticFieldStrength = sqrt(
+                event.values[0].toDouble().pow(2.0) +
+                        event.values[1].toDouble().pow(2.0) +
+                        event.values[2].toDouble().pow(2.0)
+            )
 
             progressBar.progress = magneticFieldStrength.toInt()
-            progressBar.max = 1000
+            progressBar.max = 200
 
+            //magnetometer display
             cardView = findViewById(R.id.cardView)
             if (magneticFieldStrength > 0){
                 magneticFieldStrengthTextView.text = "${magneticFieldStrength.toInt()}"
             }
-            else{
-                magneticFieldStrengthTextView.text = "0"
+
+
+            //magnetometer conditions
+            if (magneticFieldStrength > 50 && magneticFieldStrength < 100){
+                cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.orange))
+                textView.text = "Metal Nearby 👀"
             }
-
-
-            if (magneticFieldStrength > 50) {
-                textView.text = "Metal Nearby! 👀"
-                cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.flashyellow))
-                if (magneticFieldStrength > 100){
-                    cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.orange))
-                    textView.text = "Metal Detected! 🙌"
-                }
-                if (magneticFieldStrength > 300){
-                    cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.red))
-                    textView.text = "Metal Detected! 😊🙌"
-                }
-            } else {
+            else {
                 cardView.setCardBackgroundColor(Color.GRAY)
-                textView.text = "No metal detected. 🥲"
-                vibrator.cancel()
+                textView.text = "No metal Detected 😢"
             }
+
+            if (magneticFieldStrength > 70 && magneticFieldStrength < 400) {
+                cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.red))
+                textView.text = "Metal Detected 👏"
+            }
+
+            if (magneticFieldStrength > 70 && isVibrating) {
+                startVibrating()
+            }else{
+                stopVibrating()
+            }
+
+
+            if (magneticFieldStrength > 70 && isBeeping) {
+                startBeeping()
+            }else{
+                stopBeeping()
+            }
+
+            if (magneticFieldStrength > 400) {
+                progressBar1.max = 100
+                progressBar1.progress = 100
+                cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.red))
+                textView.text = "Metal Detected 👏"
+            }
+            else {
+                progressBar1.progress = 0
+            }
+
+            if (magneticFieldStrength > 800){
+                progressBar2.max = 100
+                progressBar2.progress = 100
+                cardView.setCardBackgroundColor(ActivityCompat.getColor(this, R.color.red))
+                textView.text = "Metal Detected 👏"
+            }
+            else{
+                progressBar2.progress = 0
+            }
+
         }
     }
 
+    //flash permission
     override fun onRequestPermissionsResult(
         requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
@@ -374,27 +487,56 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
 
-    /*private fun playmidlong() {
-        val sound = R.raw.beepmidlong
-        val mediaPlayer = android.media.MediaPlayer.create(this, sound)
-        mediaPlayer.start()
+
+    //beep
+    private fun startBeeping() {
+        if (!mediaPlayer.isPlaying) {
+            mediaPlayer.start()
+            mediaPlayer.isLooping = true
+        }
     }
 
-    private fun playmidshort() {
-        val sound = R.raw.beepmidshort
-        val mediaPlayer = android.media.MediaPlayer.create(this, sound)
-        mediaPlayer.start()
+    private fun stopBeeping() {
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+            mediaPlayer.release()
+            mediaPlayer = MediaPlayer.create(this, R.raw.beepfast)
+        }
     }
 
-    private fun vibratenear() {
+    override fun onDestroy() {
+        super.onDestroy()
+        stopVibrating()
+        stopBeeping()
+    }
+
+    //vibration
+    private fun startVibrating() {
         if (vibrator.hasVibrator()) {
-            val pattern = longArrayOf(0, 100, 100)
-            vibrator.vibrate(pattern, 0)
+            val vibrationEffect = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE)
+            } else {
+                vibrator.vibrate(100)
+                TODO("VERSION.SDK_INT < O")
+            }
+            vibrator.vibrate(vibrationEffect)
+        }
+    }
+
+
+    /*private fun startVibratingNear() {
+        if (vibrator.hasVibrator() && isMagnetometerEnabled) {
+            val pattern = longArrayOf(0, 50,50)
+            vibrator.vibrate(pattern,0)
         }
     }*/
 
+    private fun stopVibrating() {
+        vibrator.cancel()
+    }
+
     //flashlight
-    fun turnOnFlash() {
+    private fun turnOnFlash() {
         if (ContextCompat.checkSelfPermission(this, "android.permission.CAMERA") != 0) {
             requestPermissions(arrayOf("android.permission.CAMERA"), 2)
         } else
@@ -410,7 +552,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 Log.e("ContentValues", e.toString())
             }
     }
-    fun turnOffFlash() {
+    private fun turnOffFlash() {
         try {
             var cameraManager = this.getSystemService(CAMERA_SERVICE) as CameraManager
             if (this.isLighOn) {
@@ -434,6 +576,21 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         startActivity(intent)
     }
 
+
+    //back pressed exit
+    override fun onBackPressed() {
+        val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
+        builder.setTitle("Exit the App?")
+            .setIcon(R.drawable.warning)
+            .setCancelable(true)
+            .setPositiveButton("Yes"){ dialog, id ->
+                finish()
+            }
+            .setNegativeButton("No"){ dialog, id ->
+                dialog.cancel()
+            }
+        builder.show()
+    }
 
 }
 
