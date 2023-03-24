@@ -228,7 +228,7 @@
             android:layout_height="70dp"
             android:text="Start Detection"
             android:textSize="18sp"
-            app:icon="@drawable/pause_button"
+            app:icon="@drawable/play_icon"
             app:iconSize="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
