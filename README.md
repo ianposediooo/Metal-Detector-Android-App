@@ -1,4 +1,6 @@
+# App Icon
 <img alt="[metal-detector]" src="https://user-images.githubusercontent.com/107023328/227561813-92fb96b9-d569-4253-89b4-56b00e2ebd5d.png" width="200">
+<a href="https://www.flaticon.com/free-icons/metal-detector" title="metal detector icons">Metal detector icons created by Freepik - Flaticon</a>
 
 
 # Metal Detector Android App
