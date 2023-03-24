@@ -220,7 +220,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/accuracyTextView"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="30dp"
+        android:id="@+id/buttons">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/button3"
@@ -260,5 +261,15 @@
             tools:ignore="SpeakableTextPresentCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.materialswitch.MaterialSwitch
+        android:layout_marginTop="20dp"
+        android:id="@+id/keepScrenOn_Switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Keep Screen ON"
+        android:textSize="14sp"
+        android:layout_below="@+id/buttons"
+        android:layout_centerHorizontal="true"/>
 
 </RelativeLayout>

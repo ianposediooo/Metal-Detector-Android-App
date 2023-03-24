@@ -22,6 +22,7 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.WindowManager
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -33,6 +34,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.materialswitch.MaterialSwitch
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -99,7 +101,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             builder.show()
         }
 
-
+        //keepscreenonswitch
+        val keepScreenOnSwitch = findViewById<MaterialSwitch>(R.id.keepScrenOn_Switch)
+        keepScreenOnSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
+            if (isChecked) {
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            } else {
+                window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+        }
 
 
         //vibration and beep buttons
