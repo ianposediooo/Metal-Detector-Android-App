@@ -268,39 +268,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
 
-            //settings menu
-            /*R.id.nav_settings -> {
-                // Handle menu item 1 click
-                val window = window
-                val checkBoxView = View.inflate(this, R.layout.checkbox, null)
-
-                val checkBox2 = checkBoxView.findViewById<CheckBox>(R.id.checkbox2)
-
-                //keep screen on checkbox
-                checkBox2.text = "Keep Screen On"
-                checkBox2.setOnCheckedChangeListener { buttonView, isChecked ->
-                    if (isChecked) {
-                        Toast.makeText(this, "Keeping screen on", Toast.LENGTH_SHORT).show()
-                        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    } else {
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                        getSharedPreferences("MyPreferences", Context.MODE_PRIVATE)
-                    }
-                }
-
-                //settings dialog
-                val builder = MaterialAlertDialogBuilder(this, R.style.CustomDialogTheme)
-                builder.setTitle("Settings")
-                    .setIcon(R.drawable.settings_icon)
-                    .setView(checkBoxView)
-                    .setCancelable(false)
-                    .setNegativeButton("OK") { dialog, id ->
-                        dialog.cancel()
-                    }
-                builder.show()
-                return true
-            }*/
-
             //share menu item
             R.id.nav_share -> {
                 var myVersionName: String? = "Not Available" // initialize String
