@@ -25,3 +25,8 @@ I am a fresh graduate with a deep passion for coding and building mobile applica
 EvacuNation App is released under the GNU General Public License v3.0
 (GPLv3), which can be found [here](LICENSE.md)
 
+## Disclaimer:
+
+This metal detector app is designed for entertainment purposes only and should not be used for serious metal detection activities. The accuracy of the app's readings may vary depending on a number of factors, including the device used, electromagnetic interference, and the presence of other metals or objects in the surrounding environment. The app is not intended to replace professional metal detectors and should not be relied upon for any serious metal detection purposes.
+
+Furthermore, the user should always obtain proper permission before using the app to detect metal on private property or in any other sensitive locations. The app developer and/or distributor assume no liability for any damages or legal consequences arising from the use of this app. Use of the app constitutes agreement to these terms and conditions.
