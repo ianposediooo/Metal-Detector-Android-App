@@ -106,8 +106,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         keepScreenOnSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Toast.makeText(this, "Keeping Screen ON", Toast.LENGTH_SHORT).show()
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                Toast.makeText(this, "Keeping Screen ON disabled", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -409,6 +411,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
 
             if (magneticFieldStrength > 70 && isBeeping) {
+                mediaPlayer.isLooping = true
                 startBeeping()
             }else{
                 stopBeeping()
@@ -469,7 +472,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private fun startBeeping() {
         if (!mediaPlayer.isPlaying) {
             mediaPlayer.start()
-            mediaPlayer.isLooping = true
         }
     }
 
