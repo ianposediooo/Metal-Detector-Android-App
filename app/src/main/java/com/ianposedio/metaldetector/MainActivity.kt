@@ -28,6 +28,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
@@ -35,6 +36,7 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.snackbar.Snackbar
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -102,14 +104,17 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
 
         //keepscreenonswitch
+        val coordinatorLayout = findViewById<CoordinatorLayout>(R.id.coordinator)
         val keepScreenOnSwitch = findViewById<MaterialSwitch>(R.id.keepScrenOn_Switch)
         keepScreenOnSwitch.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Toast.makeText(this, "Keeping Screen ON", Toast.LENGTH_SHORT).show()
+                Snackbar.make(coordinatorLayout, "Keeping Screen ON", Snackbar.LENGTH_SHORT)
+                    .show()
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Toast.makeText(this, "Keeping Screen ON disabled", Toast.LENGTH_SHORT).show()
+                Snackbar.make(coordinatorLayout, "Keeping Screen ON disabled", Snackbar.LENGTH_SHORT)
+                    .show()
             }
         }
 

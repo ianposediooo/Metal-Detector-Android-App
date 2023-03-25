@@ -23,11 +23,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MetalDetector"
         tools:targetApi="31">
+
+
         <activity
-            android:noHistory="false"
-            android:screenOrientation="portrait"
-            android:name=".MainActivity"
-            android:exported="true">
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -38,6 +39,13 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
+
+        <!-- Main Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"/>
+
+
     </application>
 
 </manifest>
