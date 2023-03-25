@@ -31,7 +31,7 @@
         android:layout_below="@+id/cardView"
         android:layout_centerHorizontal="true"
         android:layout_marginStart="25dp"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="10dp"
         android:layout_marginEnd="25dp"
         android:hapticFeedbackEnabled="false">
 
@@ -161,7 +161,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         app:cardCornerRadius="28dp"
         android:layout_marginStart="50dp"
         app:cardElevation="10dp">
@@ -171,16 +171,16 @@
     android:layout_height="match_parent">
 
         <TextView
-            android:layout_marginTop="28dp"
             android:id="@+id/textView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="28dp"
             android:gravity="center"
+            android:text="Start Detection"
             android:textColor="@color/white"
             android:textSize="24sp"
-            android:textStyle="bold"
-            android:text="Start Detection" />
+            android:textStyle="bold" />
 
         <TextView
             android:layout_below="@id/number"
@@ -270,7 +270,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.materialswitch.MaterialSwitch
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/keepScrenOn_Switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
