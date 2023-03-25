@@ -113,7 +113,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     .show()
             } else {
                 window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                Snackbar.make(coordinatorLayout, "Keeping Screen ON disabled", Snackbar.LENGTH_SHORT)
+                Snackbar.make(coordinatorLayout, "Keep Screen ON disabled", Snackbar.LENGTH_SHORT)
                     .show()
             }
         }
