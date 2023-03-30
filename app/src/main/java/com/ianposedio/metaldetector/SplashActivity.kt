@@ -32,6 +32,6 @@ class SplashActivity : AppCompatActivity() {
 
     companion object {
         // Splash screen delay time in milliseconds
-        private const val SPLASH_SCREEN_TIMEOUT = 3000L
+        private const val SPLASH_SCREEN_TIMEOUT = 2000L
     }
 }

@@ -125,9 +125,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 if (isBeeping) {
                     beepButton.setIconResource(R.drawable.soundon_icon)
                     startBeeping()
+                    Snackbar.make(coordinatorLayout, "Sound ON", Snackbar.LENGTH_SHORT)
+                        .show()
                 } else {
                     beepButton.setIconResource(R.drawable.mute_button)
                     stopBeeping()
+                    Snackbar.make(coordinatorLayout, "Sound OFF", Snackbar.LENGTH_SHORT)
+                        .show()
                 }
             }
 
@@ -136,12 +140,15 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 if (isVibrating) {
                     vibrateButton.setIconResource(R.drawable.vibration_button)
                     startVibrating()
+                    Snackbar.make(coordinatorLayout, "Vibration ON", Snackbar.LENGTH_SHORT)
+                        .show()
                 } else {
                     vibrateButton.setIconResource(R.drawable.vibrateoff)
                     stopVibrating()
+                    Snackbar.make(coordinatorLayout, "Vibration OFF", Snackbar.LENGTH_SHORT)
+                        .show()
                 }
             }
-
 
 
         //material toolbar
@@ -163,7 +170,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 button.setIconResource(R.drawable.stop_icon)
             }
         }
-
 
         //floatingactionbutton
         this.fab.setOnClickListener(
@@ -240,7 +246,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     .setMessage("The magnetometer sensor accuracy is $accuracyText. Please calibrate the sensor like in the image shown below (4 times).")
                     .setView(calibrationview)
                     .setCancelable(false)
-                    .setPositiveButton("OK") { dialog, id ->
+                    .setPositiveButton("Done") { dialog, id ->
                         if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
                             dialog.dismiss()
                         }
@@ -257,7 +263,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     .setMessage("The magnetometer sensor accuracy is $accuracyText. Please calibrate the sensor like in the image shown below (4 times).")
                     .setView(calibrationview)
                     .setCancelable(false)
-                    .setPositiveButton("OK") { dialog, id ->
+                    .setPositiveButton("Done") { dialog, id ->
                         if (sensor.type == Sensor.TYPE_MAGNETIC_FIELD && accuracy == SensorManager.SENSOR_STATUS_ACCURACY_HIGH) {
                             dialog.dismiss()
                         }

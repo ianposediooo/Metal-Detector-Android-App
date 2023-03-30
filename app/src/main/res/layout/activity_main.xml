@@ -11,8 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:clickable="true"
         android:focusable="true"
         app:srcCompat="@drawable/flashlight_off"
@@ -151,7 +151,7 @@
         app:navigationIcon="@mipmap/ic_launcher_foreground"
         app:title="@string/app_name"
         app:titleCentered="true"
-        app:titleTextColor="?attr/colorOnPrimary" />
+        app:titleTextColor="?attr/colorOnPrimary"/>
 
 
     <com.google.android.material.card.MaterialCardView
@@ -163,7 +163,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         app:cardCornerRadius="28dp"
-        android:layout_marginStart="50dp"
+        android:layout_marginStart="40dp"
         app:cardElevation="10dp">
 
     <RelativeLayout

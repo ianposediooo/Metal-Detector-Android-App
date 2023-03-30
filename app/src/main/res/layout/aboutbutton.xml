@@ -23,7 +23,6 @@
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:textAlignment="center"
-            android:fontFamily="@font/productsans"
             android:textColor="?attr/colorPrimary"
             android:textSize="18sp"
             android:text="Developed and Designed by: \nIan Posedio\n\nMade in PH 🇵🇭❤️"/>

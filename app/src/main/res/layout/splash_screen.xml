@@ -23,15 +23,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Metal Detector"
-        android:textSize="32sp"
         android:textAlignment="center"
         android:textColor="?attr/colorOnPrimary"
+        android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/splash_image">
 
     </TextView>
+
+    <ProgressBar
+        android:indeterminateTint="?attr/colorOnPrimary"
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewSplash" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
